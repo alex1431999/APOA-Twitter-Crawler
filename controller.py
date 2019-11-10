@@ -39,6 +39,10 @@ class Controller():
         for twitter_result in twitter_results:
             self.__save_tweet(twitter_result)
 
+    def enable_streams(self, keywords):
+        for keyword in keywords:
+            self.crawler.start_stream(keyword, self.mongo_controller)
+
     def run_full(self):
         """
         Get all keywords and run a crawl over them
@@ -55,5 +59,3 @@ class Controller():
                 keyword = Keyword(keyword_dict) # Cast the keyword to a Keyword object
                 twitter_results = self.crawler.search(keyword, limit=10) # Run the search
                 self.__save_tweets(twitter_results) # Save all tweets to the DB
-
-        
