@@ -9,10 +9,10 @@ Rate limit information:
 import os
 import sys
 import json
-import tweepy
 
 from time import sleep
 
+import tweepy
 from common.config import SUPPORTED_LANGUAGES
 from common.utils.read_json import read_json
 
@@ -148,7 +148,7 @@ class TwitterStreamListener(tweepy.StreamListener):
         # Cast the tweet
         twitter_result = TwitterCrawler.tweet_to_dict(self.keyword, tweet)
 
-        # Save tweet to db
+        # Save tweet in db
         self.mongo_controller.add_crawl_twitter(
             twitter_result['keyword_id'],
             twitter_result['tweet_id'],
