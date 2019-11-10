@@ -13,6 +13,8 @@ def run(mode):
     # Run the specified mode
     if mode == 'full':
         controller.run_full()
+    if mode == 'streaming':
+        controller.run_streaming()
     else:
         print('Please enter a valid mode')
 

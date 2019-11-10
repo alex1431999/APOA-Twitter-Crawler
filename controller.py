@@ -43,6 +43,22 @@ class Controller():
         for keyword in keywords:
             self.crawler.start_stream(keyword, self.mongo_controller)
 
+    def run_streaming(self):
+        """
+        Get all keywords and enable streaming for each of them
+        """
+        # Get a cursor of all the keywords in the databse
+        keyword_cursor = self.mongo_controller.get_keyword_batch_cursor()
+
+        # Go over each batch
+        for batch in keyword_cursor:
+
+            # Go over each keyword in the batch
+            for keyword_dict in bson.decode_all(batch):
+
+                keyword = Keyword(keyword_dict) # Cast the keyword to a Keyword object
+                self.enable_streams([keyword])
+
     def run_full(self):
         """
         Get all keywords and run a crawl over them
