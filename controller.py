@@ -41,7 +41,7 @@ class Controller():
 
     def run_full(self):
         """
-        Get all outdated keywords and run a crawl over them
+        Get all keywords and run a crawl over them
         """
         # Get a cursor of all the keywords in the databse
         keyword_cursor = self.mongo_controller.get_keyword_batch_cursor()
