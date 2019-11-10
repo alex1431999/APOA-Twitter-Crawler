@@ -119,7 +119,7 @@ class TwitterCrawler():
         stream = tweepy.Stream(auth=self.api.auth, listener=stream_listener, tweet_mode='extended')
 
         # Start streaming
-        print('Start streaming content from {}'.format(keyword))
+        print('Start streaming tweets about {}'.format(keyword))
         stream.filter(track=[keyword.keyword_string], languages=[keyword.language], is_async=True)
 
 
