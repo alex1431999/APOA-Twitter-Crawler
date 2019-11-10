@@ -1,0 +1,16 @@
+# Environment
+venv/
+.vscode
+__pycache__/
+.DS_STORE
+
+# Secrets
+secrets/
+
+# Scripts
+*.sh
+*.bat
+*.ps1
+
+# Logs
+log*.txt
