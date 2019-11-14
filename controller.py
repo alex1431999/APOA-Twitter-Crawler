@@ -56,7 +56,7 @@ class Controller():
             # Go over each keyword in the batch
             for keyword_dict in bson.decode_all(batch):
 
-                keyword = Keyword(keyword_dict) # Cast the keyword to a Keyword object
+                keyword = Keyword.mongo_result_to_keyword(keyword_dict) # Cast the keyword to a Keyword object
                 self.enable_streams([keyword])
 
     def run_full(self):
@@ -72,6 +72,6 @@ class Controller():
             # Go over each keyword in the batch
             for keyword_dict in bson.decode_all(batch):
 
-                keyword = Keyword(keyword_dict) # Cast the keyword to a Keyword object
+                keyword = Keyword.mongo_result_to_keyword(keyword_dict) # Cast the keyword to a Keyword object
                 twitter_results = self.crawler.search(keyword, limit=10) # Run the search
                 self.__save_tweets(twitter_results) # Save all tweets to the DB
