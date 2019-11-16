@@ -14,7 +14,6 @@ from time import sleep
 
 import tweepy
 from common.config import SUPPORTED_LANGUAGES
-from common.utils.read_json import read_json
 
 class TwitterCrawler():
     """
@@ -24,11 +23,14 @@ class TwitterCrawler():
         """
         Import credentials and connect to the Twitter API 
         """
-        credentials_path = os.environ['TWITTER_APPLICATION_CREDENTIALS']
-        credentials = read_json(credentials_path)
+        api_key = os.environ['TWITTER_API_KEY']
+        api_key_secret = os.environ['TWITTER_API_KEY_SECRET']
+        
+        access_token = os.environ['TWITTER_ACCESS_TOKEN']
+        access_token_secret = os.environ['TWITTER_ACCESS_TOKEN_SECRET']
 
-        auth = tweepy.OAuthHandler(credentials['api_key'], credentials['api_key_secret'])
-        auth.set_access_token(credentials['access_token'], credentials['access_token_secret'])
+        auth = tweepy.OAuthHandler(api_key, api_key_secret)
+        auth.set_access_token(access_token, access_token_secret)
 
         self.api = tweepy.API(auth)
 
