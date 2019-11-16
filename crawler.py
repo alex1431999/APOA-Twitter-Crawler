@@ -99,7 +99,7 @@ class TwitterCrawler():
         print('Search request for {}'.format(keyword))
 
         try:
-            tweets = self.api.search(keyword.keyword_string, tweet_mode='extended', count=limit, lang=keyword.language, include_entities=True)
+            tweets = tweepy.Cursor(self.api.search, q=keyword.keyword_string+" -filter:retweets",lang=keyword.language,result_type='recent', tweet_mode='extended', include_entities=True).items(limit)
         except: # Rate limit was triggered
             DEFAULT_LOGGER.log('Rate limit exceeded, waiting {} seconds'.format(back_off_time), LogTypes.INFO.value)
 
@@ -150,6 +150,7 @@ class TwitterStreamListener(tweepy.StreamListener):
         self.keyword = keyword
         self.api = api
         self.mongo_controller = mongo_controller
+        self.retweet_counter = 0
 
     def on_data(self, tweet):
         """
@@ -157,11 +158,16 @@ class TwitterStreamListener(tweepy.StreamListener):
         """
         tweet = json.loads(tweet)
 
-        if 'limit' in tweet:
+        if 'limit' in tweet: # Rate information
             return DEFAULT_LOGGER.log(json.dumps(tweet), LogTypes.INFO.value)
 
         # Cast the tweet
         twitter_result = TwitterCrawler.tweet_to_dict(self.keyword, tweet)
+
+        # Ignore retweets
+        if tweet['text'].lower().startswith("rt @"):
+            self.retweet_counter += 1
+            return DEFAULT_LOGGER.log('{} retweets skipped'.format(self.retweet_counter), LogTypes.INFO.value)
 
         DEFAULT_LOGGER.log('Tweet received: {}'.format(twitter_result['text']), LogTypes.INFO.value)
 
@@ -179,5 +185,6 @@ class TwitterStreamListener(tweepy.StreamListener):
         """
         React to errors
         """
+        DEFAULT_LOGGER.log('Twitter API error: {}'.format(status_code), LogTypes.ERROR.value)
         if status_code == 420: # Rate limit exceeded
             return True # Use back off strategy
