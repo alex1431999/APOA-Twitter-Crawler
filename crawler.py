@@ -13,6 +13,8 @@ import json
 from time import sleep
 
 import tweepy
+
+from common.utils.logging import DEFAULT_LOGGER, LogTypes
 from common.config import SUPPORTED_LANGUAGES
 
 class TwitterCrawler():
@@ -58,8 +60,16 @@ class TwitterCrawler():
                 if 'full_text' in tweet['retweeted_status']['extended_tweet']:
                     text = tweet['retweeted_status']['extended_tweet']['full_text']
 
-        likes = tweet['favorite_count']
-        retweets = tweet['retweet_count']
+        if 'favorite_count' in tweet:
+            likes = tweet['favorite_count']
+        else:
+            likes = 0
+        
+        if 'reweet_count' in tweet:
+            retweets = tweet['retweet_count']
+        else:
+            retweets = 0
+
         tweet_id = tweet['id']
         timestamp = tweet['created_at']
     
@@ -91,7 +101,7 @@ class TwitterCrawler():
         try:
             tweets = self.api.search(keyword.keyword_string, tweet_mode='extended', count=limit, lang=keyword.language, include_entities=True)
         except: # Rate limit was triggered
-            print('Rate limit exceeded, waiting {} seconds'.format(back_off_time))
+            DEFAULT_LOGGER.log('Rate limit exceeded, waiting {} seconds'.format(back_off_time), LogTypes.INFO.value)
 
             sleep(back_off_time) # Back off
             back_off_time *= 2 # We run an exponential back off time
@@ -106,7 +116,7 @@ class TwitterCrawler():
             twitter_result = self.tweet_to_dict(keyword, json.loads(json.dumps(tweet._json)))
 
             twitter_results.append(twitter_result)
-        print('Found {} results'.format(len(twitter_results)))
+        DEFAULT_LOGGER.log('Found {} results'.format(len(twitter_results)), LogTypes.INFO.value)
         return twitter_results
 
     def start_stream(self, keyword, mongo_controller):
@@ -147,8 +157,13 @@ class TwitterStreamListener(tweepy.StreamListener):
         """
         tweet = json.loads(tweet)
 
+        if 'limit' in tweet:
+            return DEFAULT_LOGGER.log(json.dumps(tweet), LogTypes.INFO.value)
+
         # Cast the tweet
         twitter_result = TwitterCrawler.tweet_to_dict(self.keyword, tweet)
+
+        DEFAULT_LOGGER.log('Tweet received: {}'.format(twitter_result['text']), LogTypes.INFO.value)
 
         # Save tweet in db
         self.mongo_controller.add_crawl_twitter(
