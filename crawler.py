@@ -96,7 +96,7 @@ class TwitterCrawler():
         if (keyword.language not in SUPPORTED_LANGUAGES):
             raise Exception('Unsupported language "{}"'.format(keyword.language))
 
-        print('Search request for {}'.format(keyword))
+        DEFAULT_LOGGER.log('Search request for {}'.format(keyword), LogTypes.INFO.value)
 
         try:
             tweets = tweepy.Cursor(self.api.search, q=keyword.keyword_string+" -filter:retweets",lang=keyword.language,result_type='recent', tweet_mode='extended', include_entities=True).items(limit)
@@ -131,7 +131,7 @@ class TwitterCrawler():
         stream = tweepy.Stream(auth=self.api.auth, listener=stream_listener, tweet_mode='extended')
 
         # Start streaming
-        print('Start streaming tweets about {}'.format(keyword))
+        DEFAULT_LOGGER.log('Start streaming tweets about {}'.format(keyword), LogTypes.INFO.value)
         stream.filter(track=[keyword.keyword_string], languages=[keyword.language], is_async=True)
 
 
