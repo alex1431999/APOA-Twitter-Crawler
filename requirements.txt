@@ -17,6 +17,7 @@ pytz==2019.3
 requests==2.22.0
 rsa==4.0
 six==1.13.0
+tweepy==3.8.0
 urllib3==1.25.7
 uWSGI==2.0.18
 git+ssh://git@gitlab.com/alex1431999/final-year-project-common.git
