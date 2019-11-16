@@ -17,11 +17,11 @@ before_script:
 stages:
   - Test
 
-pytest:
+nosetest:
   stage: Test
   script:
   - pwd
   - ls -l
   - export PYTHONPATH="$PYTHONPATH:."
   - python -c "import sys;print(sys.path)"
-  - pytest
+  - python3 -m nose
