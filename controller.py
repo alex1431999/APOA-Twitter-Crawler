@@ -1,7 +1,7 @@
 """
 Module to hanlde different scripts that the crawler can execute
 """
-
+import os
 import bson
 
 from common.mongo.controller import MongoController
@@ -17,8 +17,11 @@ class Controller():
         """
         Initialise the crawler
         """
+        mongo_connection_string = os.environ['MONGO_CONNECTION_STRING']
+        mongo_db_name = os.environ['MONGO_DB_NAME']
+
         self.crawler = TwitterCrawler()
-        self.mongo_controller = MongoController()
+        self.mongo_controller = MongoController(mongo_connection_string, mongo_db_name)
 
     def __save_tweet(self, twitter_result):
         """
