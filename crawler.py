@@ -34,7 +34,7 @@ class TwitterCrawler():
         auth = tweepy.OAuthHandler(api_key, api_key_secret)
         auth.set_access_token(access_token, access_token_secret)
 
-        self.api = tweepy.API(auth)
+        self.api = tweepy.API(auth, wait_on_rate_limit=True)
 
     @staticmethod
     def tweet_to_dict(keyword, tweet):
@@ -99,7 +99,14 @@ class TwitterCrawler():
         DEFAULT_LOGGER.log('Search request for {}'.format(keyword), LogTypes.INFO.value)
 
         try:
-            tweets = tweepy.Cursor(self.api.search, q=keyword.keyword_string+" -filter:retweets",lang=keyword.language,result_type='recent', tweet_mode='extended', include_entities=True).items(limit)
+            tweets = tweepy.Cursor(
+                self.api.search, 
+                q=keyword.keyword_string+" -filter:retweets",
+                lang=keyword.language,result_type='recent', 
+                tweet_mode='extended', 
+                include_entities=True,
+                count=limit,
+            ).items(limit)
         except: # Rate limit was triggered
             DEFAULT_LOGGER.log('Rate limit exceeded, waiting {} seconds'.format(back_off_time), LogTypes.INFO.value)
 
@@ -114,6 +121,7 @@ class TwitterCrawler():
         twitter_results = []
         for tweet in tweets:
             twitter_result = self.tweet_to_dict(keyword, json.loads(json.dumps(tweet._json)))
+            DEFAULT_LOGGER.log('Tweet received (search): {}'.format(twitter_result['text']), LogTypes.INFO.value)
 
             twitter_results.append(twitter_result)
         DEFAULT_LOGGER.log('Found {} results'.format(len(twitter_results)), LogTypes.INFO.value)
