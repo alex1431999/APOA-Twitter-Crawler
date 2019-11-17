@@ -76,5 +76,5 @@ class Controller():
             for keyword_dict in bson.decode_all(batch):
 
                 keyword = Keyword.mongo_result_to_keyword(keyword_dict) # Cast the keyword to a Keyword object
-                twitter_results = self.crawler.search(keyword, limit=10) # Run the search
+                twitter_results = self.crawler.search(keyword) # Run the search
                 self.__save_tweets(twitter_results) # Save all tweets to the DB
