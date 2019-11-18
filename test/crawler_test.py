@@ -3,7 +3,6 @@ import json
 
 from datetime import datetime
 from unittest.mock import Mock, patch
-from tweepy import API
 
 from common.mongo.data_types.keyword import Keyword
 from crawler import TwitterCrawler
@@ -55,7 +54,6 @@ class TestGoogleCloudLanguageProcessor(unittest.TestCase):
     """
     def setUp(self):
         # Mocking
-        self.twitter_api_mock_object = TwitterAPIMock()
         self.mock_twitter_api()
         
         # Crawler
@@ -63,6 +61,7 @@ class TestGoogleCloudLanguageProcessor(unittest.TestCase):
         
 
     def mock_twitter_api(self):
+        self.twitter_api_mock_object = TwitterAPIMock()
         self.twitter_API_mock = patch('tweepy.API')
         self.twitter_API_mock.start()
         self.twitter_API_mock.return_value = self.twitter_api_mock_object
@@ -75,8 +74,9 @@ class TestGoogleCloudLanguageProcessor(unittest.TestCase):
         api = self.crawler.api
         self.assertIsNotNone(api) # api is mocked
 
-    def test_search(self):
-        self.crawler.api.search.return_value = [TwitterAPIResult('some text')] # Mock the result from searching
+    @patch('tweepy.Cursor')
+    def test_search(self, tweepy_cursor_mock):
+        tweepy_cursor_mock.return_value.items.return_value = [TwitterAPIResult('some text')]
 
         twitter_results = self.crawler.search(Keyword(0, 'some text', 'en'))
         self.assertEqual(len(twitter_results), 1, 'Only one element should have been returned')
