@@ -2,6 +2,7 @@
 Module to hanlde different scripts that the crawler can execute
 """
 import os
+import sys
 import bson
 
 from common.mongo.controller import MongoController
@@ -19,6 +20,11 @@ class Controller():
         """
         mongo_connection_string = os.environ['MONGO_CONNECTION_STRING']
         mongo_db_name = os.environ['MONGO_DB_NAME']
+
+        if 'TWEET_LIMIT_REQUEST_EACH' in os.environ:
+            self.limit_requests = int(os.environ['TWEET_LIMIT_REQUEST_EACH'])
+        else:
+            self.limit_requests = sys.maxsize
 
         self.crawler = TwitterCrawler()
         self.mongo_controller = MongoController(mongo_connection_string, mongo_db_name)
@@ -64,7 +70,7 @@ class Controller():
         :param str language: Target language
         """
         keyword = self.mongo_controller.get_keyword(keyword_string, language)
-        twitter_results = self.crawler.search(keyword)
+        twitter_results = self.crawler.search(keyword, limit=self.limit_requests)
         self.__save_tweets(twitter_results)
 
     def run_streaming(self):
@@ -97,5 +103,5 @@ class Controller():
             for keyword_dict in bson.decode_all(batch):
 
                 keyword = Keyword.mongo_result_to_keyword(keyword_dict) # Cast the keyword to a Keyword object
-                twitter_results = self.crawler.search(keyword) # Run the search
+                twitter_results = self.crawler.search(keyword, limit=self.limit_requests) # Run the search
                 self.__save_tweets(twitter_results) # Save all tweets to the DB
