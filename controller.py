@@ -9,6 +9,7 @@ from common.mongo.controller import MongoController
 from common.mongo.data_types.keyword import Keyword
 
 from crawler import TwitterCrawler
+from tasks import app
 
 class Controller():
     """
@@ -35,14 +36,20 @@ class Controller():
 
         :param dict twitter_result: The result received packaged up
         """
-        return self.mongo_controller.add_crawl_twitter(
+        crawl = self.mongo_controller.add_crawl_twitter(
             twitter_result['keyword_id'],
             twitter_result['tweet_id'],
             twitter_result['text'],
             twitter_result['likes'],
             twitter_result['retweets'],
             twitter_result['timestamp'],
+            return_object=True,
+            cast=True,
         )
+
+        app.send_task('process-crawl', kwargs={ 'crawl_dict': crawl.__dict__ })
+
+        return crawl
 
     def __save_tweets(self, twitter_results):
         """
@@ -69,7 +76,7 @@ class Controller():
         :param str keyword_string: Target keyword string
         :param str language: Target language
         """
-        keyword = self.mongo_controller.get_keyword(keyword_string, language)
+        keyword = self.mongo_controller.get_keyword(keyword_string, language, cast=True)
         twitter_results = self.crawler.search(keyword, limit=self.limit_requests)
         self.__save_tweets(twitter_results)
 
@@ -86,7 +93,7 @@ class Controller():
             # Go over each keyword in the batch
             for keyword_dict in bson.decode_all(batch):
 
-                keyword = Keyword.mongo_result_to_keyword(keyword_dict) # Cast the keyword to a Keyword object
+                keyword = Keyword.from_dict(keyword_dict) # Cast the keyword to a Keyword object
                 self.enable_streams([keyword])
 
     def run_full(self):
@@ -102,6 +109,6 @@ class Controller():
             # Go over each keyword in the batch
             for keyword_dict in bson.decode_all(batch):
 
-                keyword = Keyword.mongo_result_to_keyword(keyword_dict) # Cast the keyword to a Keyword object
+                keyword = Keyword.from_dict(keyword_dict) # Cast the keyword to a Keyword object
                 twitter_results = self.crawler.search(keyword, limit=self.limit_requests) # Run the search
                 self.__save_tweets(twitter_results) # Save all tweets to the DB

@@ -17,6 +17,8 @@ import tweepy
 from common.utils.logging import DEFAULT_LOGGER, LogTypes
 from common.config import SUPPORTED_LANGUAGES
 
+from tasks import app
+
 class TwitterCrawler():
     """
     Interface to the Twitter API
@@ -180,14 +182,18 @@ class TwitterStreamListener(tweepy.StreamListener):
         DEFAULT_LOGGER.log('Tweet received: {}'.format(twitter_result['text']), LogTypes.INFO.value)
 
         # Save tweet in db
-        self.mongo_controller.add_crawl_twitter(
+        crawl = self.mongo_controller.add_crawl_twitter(
             twitter_result['keyword_id'],
             twitter_result['tweet_id'],
             twitter_result['text'],
             twitter_result['likes'],
             twitter_result['retweets'],
             twitter_result['timestamp'],
+            return_object=True,
+            cast=True,
         )
+
+        app.send_task('process-crawl', kwargs={ 'crawl_dict': crawl.__dict__ })
 
     def on_error(self, status_code):
         """

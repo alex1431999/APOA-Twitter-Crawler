@@ -7,11 +7,11 @@ import os
 from celery import Celery
 from common.utils.logging import DEFAULT_LOGGER, LogTypes
 
-from controller import Controller
-
 app = Celery('tasks',
     broker = os.environ['BROKER_URL']
 )
+
+from controller import Controller
 
 controller = Controller()
 
