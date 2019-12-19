@@ -39,12 +39,33 @@ class Controller():
         )
 
     def __save_tweets(self, twitter_results):
+        """
+        Save all tweets
+
+        :param list<dict> twitter_results: The to be saved twitter results
+        """
         for twitter_result in twitter_results:
             self.__save_tweet(twitter_result)
 
     def enable_streams(self, keywords):
+        """
+        Start a new stream for each of the keywords
+
+        :param list<Keyword> keywords: The target keywords
+        """
         for keyword in keywords:
             self.crawler.start_stream(keyword, self.mongo_controller)
+
+    def run_single_keyword(self, keyword_string, language):
+        """
+        Execute a search request for a single target
+
+        :param str keyword_string: Target keyword string
+        :param str language: Target language
+        """
+        keyword = self.mongo_controller.get_keyword(keyword_string, language)
+        twitter_results = self.crawler.search(keyword)
+        self.__save_tweets(twitter_results)
 
     def run_streaming(self):
         """

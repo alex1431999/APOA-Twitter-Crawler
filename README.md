@@ -24,6 +24,9 @@ export PYTHON_ENV="<Env>" # DEVELOPMENT / PRODUCTION
 export MONGO_CONNECTION_STRING="<connection-uri>"
 export MONGO_DB_NAME="<db-name>"
 
+# Celery
+export BROKER_URL="<URL>"
+
 # Secrets
 export TWITTER_API_KEY="<Key>"
 export TWITTER_API_KEY_SECRET="<Key-Secret>"
@@ -56,5 +59,5 @@ source set_env.sh
 ```
 Activate worker:
 ```
-celery -A worker tasks -l info
+celery -A tasks worker -l info
 ```
