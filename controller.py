@@ -47,7 +47,7 @@ class Controller():
             cast=True,
         )
 
-        app.send_task('process-crawl', kwargs={ 'crawl_dict': crawl.__dict__ })
+        app.send_task('process-crawl', kwargs={ 'crawl_dict': crawl.to_json() })
 
         return crawl
 
