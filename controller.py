@@ -58,8 +58,8 @@ class Controller():
 
         :param list<dict> twitter_results: The to be saved twitter results
         """
-        for twitter_result in twitter_results:
-            self.__save_tweet(twitter_result)
+        crawls = [self.__save_tweet(twitter_result) for twitter_result in twitter_results]
+        return crawls
 
     def enable_streams(self, keywords):
         """
@@ -79,7 +79,7 @@ class Controller():
         """
         keyword = self.mongo_controller.get_keyword(keyword_string, language, cast=True)
         twitter_results = self.crawler.search(keyword, limit=self.limit_requests)
-        self.__save_tweets(twitter_results)
+        return self.__save_tweets(twitter_results)
 
     def run_streaming(self):
         """

@@ -25,4 +25,6 @@ def crawl_twitter_keyword(keyword_string, language):
     :param str language: The target language
     """
     DEFAULT_LOGGER.log('Received twitter keyword crawl request for {} ({})'.format(keyword_string, language), log_type=LogTypes.INFO.value)
-    controller.run_single_keyword(keyword_string, language)
+    result = controller.run_single_keyword(keyword_string, language)
+
+    return True if result else False
