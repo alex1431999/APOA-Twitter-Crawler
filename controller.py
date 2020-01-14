@@ -7,6 +7,7 @@ import bson
 
 from common.mongo.controller import MongoController
 from common.mongo.data_types.keyword import Keyword
+from common.celery import queues
 
 from crawler import TwitterCrawler
 from tasks import app
@@ -47,7 +48,7 @@ class Controller():
             cast=True,
         )
 
-        app.send_task('process-crawl', kwargs={ 'crawl_dict': crawl.to_json() })
+        app.send_task('process-crawl', kwargs={ 'crawl_dict': crawl.to_json() }, queue=queues['processor'])
 
         return crawl
 

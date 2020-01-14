@@ -4,8 +4,9 @@ It also runs all the setup required for celery to function.
 """
 import os
 
-from celery import Celery
 from common.utils.logging import DEFAULT_LOGGER, LogTypes
+from common.celery import queues
+from celery import Celery
 
 app = Celery('tasks',
     broker = os.environ['BROKER_URL']
@@ -15,7 +16,7 @@ from controller import Controller
 
 controller = Controller()
 
-@app.task(name='crawl-twitter-keyword')
+@app.task(name='crawl-twitter-keyword', queue=queues['twitter'])
 def crawl_twitter_keyword(keyword_string, language):
     """
     Crawl a single keyword Task
