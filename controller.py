@@ -5,6 +5,8 @@ import os
 import sys
 import bson
 
+from datetime import datetime
+
 from common.mongo.controller import MongoController
 from common.mongo.data_types.keyword import Keyword
 from common.celery import queues
@@ -37,13 +39,28 @@ class Controller():
 
         :param dict twitter_result: The result received packaged up
         """
+        timestamp = twitter_result['timestamp']
+
+        # Remove +0000 from timestamp
+        timestamp_split = timestamp.split(' ')
+        timestamp = ''
+        for piece in timestamp_split:
+            if piece[0] is not '+':
+                timestamp += piece + ' '
+
+        # Remove trailing space
+        timestamp = timestamp[:-1]
+
+        # Cast to iso format
+        timestamp = datetime.strptime(timestamp, "%a %b %d %H:%M:%S %Y").isoformat()
+
         crawl = self.mongo_controller.add_crawl_twitter(
             twitter_result['keyword_id'],
             twitter_result['tweet_id'],
             twitter_result['text'],
             twitter_result['likes'],
             twitter_result['retweets'],
-            twitter_result['timestamp'],
+            timestamp,
             return_object=True,
             cast=True,
         )
