@@ -22,16 +22,13 @@ class Controller():
         """
         Initialise the crawler
         """
-        mongo_connection_string = os.environ['MONGO_CONNECTION_STRING']
-        mongo_db_name = os.environ['MONGO_DB_NAME']
-
         if 'TWEET_LIMIT_REQUEST_EACH' in os.environ:
             self.limit_requests = int(os.environ['TWEET_LIMIT_REQUEST_EACH'])
         else:
             self.limit_requests = sys.maxsize
 
         self.crawler = TwitterCrawler()
-        self.mongo_controller = MongoController(mongo_connection_string, mongo_db_name)
+        self.mongo_controller = MongoController()
 
     def __save_tweet(self, twitter_result):
         """
