@@ -59,7 +59,7 @@ class Controller():
             twitter_result['retweets'],
             timestamp,
             return_object=True,
-            cast=True,
+            cast=False,
         )
 
         app.send_task('process-crawl', kwargs={ 'crawl_dict': crawl.to_json() }, queue=queues['processor'])
