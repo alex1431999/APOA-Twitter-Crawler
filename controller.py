@@ -62,7 +62,7 @@ class Controller():
             cast=False,
         )
 
-        app.send_task('process-crawl', kwargs={ 'crawl_dict': crawl.to_json() }, queue=queues['processor'])
+        app.send_task('process-crawl', kwargs={ 'crawl_dict': crawl }, queue=queues['processor'])
 
         return crawl
 
