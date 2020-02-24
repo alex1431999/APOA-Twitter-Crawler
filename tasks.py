@@ -8,12 +8,11 @@ from common.utils.logging import DEFAULT_LOGGER, LogTypes
 from common.celery import queues
 from celery import Celery
 
-from controller import Controller
-
 app = Celery('tasks',
     broker = os.environ['BROKER_URL']
 )
 
+from controller import Controller
 
 @app.task(name='crawl-twitter-keyword', queue=queues['twitter'])
 def crawl_twitter_keyword(keyword_string, language):
