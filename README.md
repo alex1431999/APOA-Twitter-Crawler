@@ -33,8 +33,13 @@ export TWITTER_API_KEY_SECRET="<Key-Secret>"
 
 export TWITTER_ACCESS_TOKEN="<Token>"
 export TWITTER_ACCESS_TOKEN_SECRET="<Token>"
-
 ```
+
+## Testing
+### Execution
+````
+python3 -m nose
+````
 
 ## Development
 Activate venv:
