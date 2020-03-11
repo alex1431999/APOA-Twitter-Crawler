@@ -1,5 +1,11 @@
 image: "python:3.7"
 
+services:
+  - rabbitmq:latest
+
+variables:
+  BROKER_URL: 'amqp://guest:guest@localhost:5672'
+
 before_script:
   - python --version
   # install ssh-agent
