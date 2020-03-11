@@ -4,7 +4,6 @@ This module handles all Twitter crawling
 Rate limit information:
     - Link: https://developer.twitter.com/en/docs/basics/rate-limiting
     - TLDR: 180 Requests every 15 minutes
-
 """
 import os
 import sys
