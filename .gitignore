@@ -4,6 +4,9 @@ venv/
 __pycache__/
 .DS_STORE
 
+# Manual testing
+playground.py
+
 # Secrets
 secrets/
 
