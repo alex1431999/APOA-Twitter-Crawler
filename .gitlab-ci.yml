@@ -5,6 +5,8 @@ services:
 
 variables:
   BROKER_URL: 'amqp://guest:guest@localhost:5672'
+  MONGO_CONNECTION_STRING: 'mongodb://mongo:27017'
+  MONGO_DB_NAME: 'ci_test'
 
 before_script:
   - python --version
