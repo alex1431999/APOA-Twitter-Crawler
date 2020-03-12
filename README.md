@@ -36,6 +36,12 @@ export TWITTER_ACCESS_TOKEN_SECRET="<Token>"
 ```
 
 ## Testing
+### Environment
+````
+export MONGO_URL='mongodb://localhost:27017'
+export MONGO_DATABASE_NAME='test_twitter'
+````
+
 ### Execution
 ````
 python3 -m nose
