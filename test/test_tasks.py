@@ -75,7 +75,7 @@ class TestTasks(unittest.TestCase):
         self.assertEqual(text_expected, result[0]['text'], 'Make sure the text matches the expected text')
 
         self.assertIn('keyword_string', result[0], 'Make sure that the dict has an attribute called keyword_string')
-        self.assertEqual(self.sample_keyword.keyword_string, result[0]['keyword_string'])
+        self.assertEqual(self.sample_keyword.keyword_string, result[0]['keyword_string'], 'Make sure the right keyword has been associated to the crawl')
 
     def test_crawl_twitter_keyword_invalid_keyword(self):
         """
