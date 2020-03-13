@@ -13,9 +13,6 @@ class TestTasks(unittest.TestCase):
     sample_keyword_string = 'House'
     sample_keyword_language = 'en'
 
-    # Database config
-    db_name = 'twitter_test_task'
-
     # Setup
     validated = False
 
@@ -23,18 +20,18 @@ class TestTasks(unittest.TestCase):
         """
         Initialise the database
         """
+        self.mongo_controller = MongoController()
+        self.sample_keyword = self.mongo_controller.add_keyword(self.sample_keyword_string, self.sample_keyword_language, self.sample_user, return_object=True,  cast=True)
+        
         if not self.validated: # Only run this once
             self.__ensure_keyword_validity()
             self.validated = True
-
-        self.mongo_controller = MongoController(db_name=self.db_name)
-        self.sample_keyword = self.mongo_controller.add_keyword(self.sample_keyword_string, self.sample_keyword_language, self.sample_user, return_object=True,  cast=True)
 
     def tearDown(self):
         """
         Tear down the database
         """
-        self.mongo_controller.client.drop_database(self.db_name)
+        self.mongo_controller.client.drop_database(os.environ['MONGO_DATABASE_NAME'])
 
     def __ensure_keyword_validity(self):
         """
@@ -46,6 +43,7 @@ class TestTasks(unittest.TestCase):
         else: # If twitter didn't return any results use a different keyword
             self.sample_keyword_string = 'Garden'
             self.sample_keyword_language = 'en'
+            self.sample_keyword = self.mongo_controller.add_keyword(self.sample_keyword_string, self.sample_keyword_language, self.sample_user, return_object=True,  cast=True)
             return False
 
     def test_crawl_twitter_keyword(self):

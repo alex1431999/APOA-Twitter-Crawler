@@ -1,7 +1,13 @@
 image: "python:3.7"
 
+services:
+  - mongo:latest
+  - rabbitmq:latest
+
 variables:
-  BROKER_URL: 'amqp://guest:guest@localhost:5672'
+  BROKER_URL: 'amqp://guest:guest@rabbitmq:5672'
+  MONGO_URL: 'mongodb://mongo:27017'
+  MONGO_DATABASE_NAME: 'ci_test'
 
 before_script:
   - python --version
