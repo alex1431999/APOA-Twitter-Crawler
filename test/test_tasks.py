@@ -70,8 +70,12 @@ class TestTasks(unittest.TestCase):
 
         result = crawl_twitter_keyword(self.sample_keyword.keyword_string, self.sample_keyword.language)
         self.assertTrue(result, 'Make sure the list is not empty')
+
         self.assertIn('text', result[0], 'Make sure that the dict has an attribute called text')
         self.assertEqual(text_expected, result[0]['text'], 'Make sure the text matches the expected text')
+
+        self.assertIn('keyword_string', result[0], 'Make sure that the dict has an attribute called keyword_string')
+        self.assertEqual(self.sample_keyword.keyword_string, result[0]['keyword_string'])
 
     def test_crawl_twitter_keyword_invalid_keyword(self):
         """
