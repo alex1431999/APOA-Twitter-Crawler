@@ -30,6 +30,6 @@ def crawl_twitter_keyword(keyword_string, language):
 
     controller = Controller()
     DEFAULT_LOGGER.log('Received twitter keyword crawl request for {} ({})'.format(keyword_string, language), log_type=LogTypes.INFO.value)
-    result = controller.run_single_keyword(keyword_string, language)
+    results = controller.run_single_keyword(keyword_string, language)
 
-    return True if result else False
+    return [result.to_json() for result in results]
