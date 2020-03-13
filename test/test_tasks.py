@@ -44,12 +44,34 @@ class TestTasks(unittest.TestCase):
     @patch('tweepy.Cursor')
     def test_crawl_twitter_keyword(self, tweepy_cursor_mock):
         """
-        Test a full run and that it was successful
+        Test a keyword crawl and that it returned something
         """
         tweepy_cursor_mock.return_value.items.return_value = [TwitterAPIResult('some text')]
 
         result = crawl_twitter_keyword(self.sample_keyword.keyword_string, self.sample_keyword.language)
-        self.assertTrue(result)
+        self.assertTrue(result, 'Make sure the list is not empty')
+
+    @patch('tweepy.Cursor')
+    def test_crawl_twitter_keyword_no_result(self, tweepy_cursor_mock):
+        """
+        Test a keyword crawl with no results returned
+        """
+        tweepy_cursor_mock.return_value.items.return_value = []
+        result = crawl_twitter_keyword(self.sample_keyword.keyword_string, self.sample_keyword.language)
+        self.assertFalse(result, 'Make sure the list is empty')
+
+    @patch('tweepy.Cursor')
+    def test_crawl_twitter_keyword_conent(self, tweepy_cursor_mock):
+        """
+        Test a keyword crawl and its returned content
+        """
+        text_expected = 'my test text'
+        tweepy_cursor_mock.return_value.items.return_value = [TwitterAPIResult(text_expected)]
+
+        result = crawl_twitter_keyword(self.sample_keyword.keyword_string, self.sample_keyword.language)
+        self.assertTrue(result, 'Make sure the list is not empty')
+        self.assertIn('text', result[0], 'Make sure that the dict has an attribute called text')
+        self.assertEqual(text_expected, result[0]['text'], 'Make sure the text matches the expected text')
 
     def test_crawl_twitter_keyword_invalid_keyword(self):
         """
