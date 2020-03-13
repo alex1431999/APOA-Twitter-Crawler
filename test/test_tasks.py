@@ -85,6 +85,6 @@ class TestTasks(unittest.TestCase):
 
     def test_crawl_twitter_keyword_unsupported_language(self):
         """
-        Test for invalid keyword inputs
+        Test for invalid language inputs
         """
         self.assertRaises(UnsupportedLanguageError, crawl_twitter_keyword, self.sample_keyword.keyword_string, None)
