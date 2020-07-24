@@ -55,4 +55,4 @@ vine==1.3.0
 wcwidth==0.1.7
 wrapt==1.11.2
 zipp==0.6.0
-git+ssh://git@gitlab.com/alex1431999/final-year-project-common.git
+git+ssh://git@gitlab.com/apoax/APOAX-Common.git
